@@ -1,0 +1,631 @@
+databaseChangeLog:
+  - changeSet:
+      id: 1
+      author: Ali
+      changes:
+        - createTable:
+            tableName: rate_dict
+            columns:
+              - column:
+                  name: id
+                  type: SERIAL
+                  constraints:
+                    primaryKey: true
+              - column:
+                  name: name
+                  type: VARCHAR(255)
+              - column:
+                  name: num_code
+                  type: VARCHAR(10)
+              - column:
+                  name: char_code
+                  type: VARCHAR(10)
+  - changeSet:
+      id: 2
+      author: Ali
+      changes:
+        - createTable:
+            tableName: countries
+            columns:
+              - column:
+                  name: id
+                  type: SERIAL
+                  constraints:
+                    primaryKey: true
+              - column:
+                  name: name
+                  type: VARCHAR(255)
+              - column:
+                  name: num_code
+                  type: VARCHAR(10)
+              - column:
+                  name: char_code
+                  type: VARCHAR(10)
+  - changeSet:
+      id: 3
+      author: Ali
+      changes:
+        - createTable:
+            tableName: rates
+            columns:
+              - column:
+                  name: id
+                  type: SERIAL
+                  constraints:
+                    primaryKey: true
+              - column:
+                  name: currency_id
+                  type: VARCHAR(20)
+                  constraints:
+                    nullable: false
+              - column:
+                  name: country_id
+                  type: INTEGER
+                  constraints:
+                    nullable: false
+              - column:
+                  name: rate_dict_id
+                  type: INTEGER
+                  constraints:
+                    nullable: false
+              - column:
+                  name: rate_date
+                  type: DATE
+                  constraints:
+                    nullable: false
+              - column:
+                  name: nominal
+                  type: INTEGER
+              - column:
+                  name: value
+                  type: NUMERIC(15, 6)
+              - column:
+                  name: created
+                  type: TIMESTAMP
+              - column:
+                  name: updated
+                  type: TIMESTAMP
+  - changeSet:
+      id: 4
+      author: Ali
+      changes:
+        - addForeignKeyConstraint:
+            baseTableName: rates
+            baseColumnNames: country_id
+            referencedTableName: countries
+            referencedColumnNames: id
+            constraintName: fk_rates_country
+  - changeSet:
+      id: 5
+      author: Ali
+      changes:
+        - addForeignKeyConstraint:
+            baseTableName: rates
+            baseColumnNames: rate_dict_id
+            referencedTableName: rate_dict
+            referencedColumnNames: id
+            constraintName: fk_rates_rate_dict
+  - changeSet:
+      id: 6
+      author: Ali
+      changes:
+        - insert:
+            tableName: rate_dict
+            columns:
+              - column: { name: name,      value: "Австралийский доллар" }
+              - column: { name: num_code,  value: "036" }
+              - column: { name: char_code, value: "AUD" }
+        - insert:
+            tableName: rate_dict
+            columns:
+              - column: { name: name,      value: "Азербайджанский манат" }
+              - column: { name: num_code,  value: "944" }
+              - column: { name: char_code, value: "AZN" }
+        - insert:
+            tableName: rate_dict
+            columns:
+              - column: { name: name,      value: "Фунт стерлингов" }
+              - column: { name: num_code,  value: "826" }
+              - column: { name: char_code, value: "GBP" }
+        - insert:
+            tableName: rate_dict
+            columns:
+              - column: { name: name,      value: "Армянских драмов" }
+              - column: { name: num_code,  value: "051" }
+              - column: { name: char_code, value: "AMD" }
+        - insert:
+            tableName: rate_dict
+            columns:
+              - column: { name: name,      value: "Белорусский рубль" }
+              - column: { name: num_code,  value: "933" }
+              - column: { name: char_code, value: "BYN" }
+        - insert:
+            tableName: rate_dict
+            columns:
+              - column: { name: name,      value: "Болгарский лев" }
+              - column: { name: num_code,  value: "975" }
+              - column: { name: char_code, value: "BGN" }
+        - insert:
+            tableName: rate_dict
+            columns:
+              - column: { name: name,      value: "Бразильский реал" }
+              - column: { name: num_code,  value: "986" }
+              - column: { name: char_code, value: "BRL" }
+        - insert:
+            tableName: rate_dict
+            columns:
+              - column: { name: name,      value: "Форинтов" }
+              - column: { name: num_code,  value: "348" }
+              - column: { name: char_code, value: "HUF" }
+        - insert:
+            tableName: rate_dict
+            columns:
+              - column: { name: name,      value: "Донгов" }
+              - column: { name: num_code,  value: "704" }
+              - column: { name: char_code, value: "VND" }
+        - insert:
+            tableName: rate_dict
+            columns:
+              - column: { name: name,      value: "Гонконгский доллар" }
+              - column: { name: num_code,  value: "344" }
+              - column: { name: char_code, value: "HKD" }
+        - insert:
+            tableName: rate_dict
+            columns:
+              - column: { name: name,      value: "Лари" }
+              - column: { name: num_code,  value: "981" }
+              - column: { name: char_code, value: "GEL" }
+        - insert:
+            tableName: rate_dict
+            columns:
+              - column: { name: name,      value: "Датская крона" }
+              - column: { name: num_code,  value: "208" }
+              - column: { name: char_code, value: "DKK" }
+        - insert:
+            tableName: rate_dict
+            columns:
+              - column: { name: name,      value: "Дирхам ОАЭ" }
+              - column: { name: num_code,  value: "784" }
+              - column: { name: char_code, value: "AED" }
+        - insert:
+            tableName: rate_dict
+            columns:
+              - column: { name: name,      value: "Доллар США" }
+              - column: { name: num_code,  value: "840" }
+              - column: { name: char_code, value: "USD" }
+        - insert:
+            tableName: rate_dict
+            columns:
+              - column: { name: name,      value: "Евро" }
+              - column: { name: num_code,  value: "978" }
+              - column: { name: char_code, value: "EUR" }
+        - insert:
+            tableName: rate_dict
+            columns:
+              - column: { name: name,      value: "Египетских фунтов" }
+              - column: { name: num_code,  value: "818" }
+              - column: { name: char_code, value: "EGP" }
+        - insert:
+            tableName: rate_dict
+            columns:
+              - column: { name: name,      value: "Индийских рупий" }
+              - column: { name: num_code,  value: "356" }
+              - column: { name: char_code, value: "INR" }
+        - insert:
+            tableName: rate_dict
+            columns:
+              - column: { name: name,      value: "Рупий" }
+              - column: { name: num_code,  value: "360" }
+              - column: { name: char_code, value: "IDR" }
+        - insert:
+            tableName: rate_dict
+            columns:
+              - column: { name: name,      value: "Тенге" }
+              - column: { name: num_code,  value: "398" }
+              - column: { name: char_code, value: "KZT" }
+        - insert:
+            tableName: rate_dict
+            columns:
+              - column: { name: name,      value: "Канадский доллар" }
+              - column: { name: num_code,  value: "124" }
+              - column: { name: char_code, value: "CAD" }
+        - insert:
+            tableName: rate_dict
+            columns:
+              - column: { name: name,      value: "Катарский риал" }
+              - column: { name: num_code,  value: "634" }
+              - column: { name: char_code, value: "QAR" }
+        - insert:
+            tableName: rate_dict
+            columns:
+              - column: { name: name,      value: "Сомов" }
+              - column: { name: num_code,  value: "417" }
+              - column: { name: char_code, value: "KGS" }
+        - insert:
+            tableName: rate_dict
+            columns:
+              - column: { name: name,      value: "Юань" }
+              - column: { name: num_code,  value: "156" }
+              - column: { name: char_code, value: "CNY" }
+        - insert:
+            tableName: rate_dict
+            columns:
+              - column: { name: name,      value: "Молдавских леев" }
+              - column: { name: num_code,  value: "498" }
+              - column: { name: char_code, value: "MDL" }
+        - insert:
+            tableName: rate_dict
+            columns:
+              - column: { name: name,      value: "Новозеландский доллар" }
+              - column: { name: num_code,  value: "554" }
+              - column: { name: char_code, value: "NZD" }
+        - insert:
+            tableName: rate_dict
+            columns:
+              - column: { name: name,      value: "Норвежских крон" }
+              - column: { name: num_code,  value: "578" }
+              - column: { name: char_code, value: "NOK" }
+        - insert:
+            tableName: rate_dict
+            columns:
+              - column: { name: name,      value: "Злотый" }
+              - column: { name: num_code,  value: "985" }
+              - column: { name: char_code, value: "PLN" }
+        - insert:
+            tableName: rate_dict
+            columns:
+              - column: { name: name,      value: "Румынский лей" }
+              - column: { name: num_code,  value: "946" }
+              - column: { name: char_code, value: "RON" }
+        - insert:
+            tableName: rate_dict
+            columns:
+              - column: { name: name,      value: "СДР (специальные права заимствования)" }
+              - column: { name: num_code,  value: "960" }
+              - column: { name: char_code, value: "XDR" }
+        - insert:
+            tableName: rate_dict
+            columns:
+              - column: { name: name,      value: "Сингапурский доллар" }
+              - column: { name: num_code,  value: "702" }
+              - column: { name: char_code, value: "SGD" }
+        - insert:
+            tableName: rate_dict
+            columns:
+              - column: { name: name,      value: "Сомони" }
+              - column: { name: num_code,  value: "972" }
+              - column: { name: char_code, value: "TJS" }
+        - insert:
+            tableName: rate_dict
+            columns:
+              - column: { name: name,      value: "Батов" }
+              - column: { name: num_code,  value: "764" }
+              - column: { name: char_code, value: "THB" }
+        - insert:
+            tableName: rate_dict
+            columns:
+              - column: { name: name,      value: "Турецких лир" }
+              - column: { name: num_code,  value: "949" }
+              - column: { name: char_code, value: "TRY" }
+        - insert:
+            tableName: rate_dict
+            columns:
+              - column: { name: name,      value: "Новый туркменский манат" }
+              - column: { name: num_code,  value: "934" }
+              - column: { name: char_code, value: "TMT" }
+        - insert:
+            tableName: rate_dict
+            columns:
+              - column: { name: name,      value: "Узбекских сумов" }
+              - column: { name: num_code,  value: "860" }
+              - column: { name: char_code, value: "UZS" }
+        - insert:
+            tableName: rate_dict
+            columns:
+              - column: { name: name,      value: "Гривен" }
+              - column: { name: num_code,  value: "980" }
+              - column: { name: char_code, value: "UAH" }
+        - insert:
+            tableName: rate_dict
+            columns:
+              - column: { name: name,      value: "Чешских крон" }
+              - column: { name: num_code,  value: "203" }
+              - column: { name: char_code, value: "CZK" }
+        - insert:
+            tableName: rate_dict
+            columns:
+              - column: { name: name,      value: "Шведских крон" }
+              - column: { name: num_code,  value: "752" }
+              - column: { name: char_code, value: "SEK" }
+        - insert:
+            tableName: rate_dict
+            columns:
+              - column: { name: name,      value: "Швейцарский франк" }
+              - column: { name: num_code,  value: "756" }
+              - column: { name: char_code, value: "CHF" }
+        - insert:
+            tableName: rate_dict
+            columns:
+              - column: { name: name,      value: "Сербских динаров" }
+              - column: { name: num_code,  value: "941" }
+              - column: { name: char_code, value: "RSD" }
+        - insert:
+            tableName: rate_dict
+            columns:
+              - column: { name: name,      value: "Рэндов" }
+              - column: { name: num_code,  value: "710" }
+              - column: { name: char_code, value: "ZAR" }
+        - insert:
+            tableName: rate_dict
+            columns:
+              - column: { name: name,      value: "Вон" }
+              - column: { name: num_code,  value: "410" }
+              - column: { name: char_code, value: "KRW" }
+        - insert:
+            tableName: rate_dict
+            columns:
+              - column: { name: name,      value: "Иена" }
+              - column: { name: num_code,  value: "392" }
+              - column: { name: char_code, value: "JPY" }
+  - changeSet:
+      id: 7
+      author: Ali
+      changes:
+        - insert:
+            tableName: countries
+            columns:
+              - column: { name: name,     value: "Австралия" }
+              - column: { name: num_code, value: "036" }
+              - column: { name: char_code,value: "AU" }
+        - insert:
+            tableName: countries
+            columns:
+              - column: { name: name,     value: "Азербайджан" }
+              - column: { name: num_code, value: "944" }
+              - column: { name: char_code,value: "AZ" }
+        - insert:
+            tableName: countries
+            columns:
+              - column: { name: name,     value: "Великобритания" }
+              - column: { name: num_code, value: "826" }
+              - column: { name: char_code,value: "GB" }
+        - insert:
+            tableName: countries
+            columns:
+              - column: { name: name,     value: "Армения" }
+              - column: { name: num_code, value: "051" }
+              - column: { name: char_code,value: "AM" }
+        - insert:
+            tableName: countries
+            columns:
+              - column: { name: name,     value: "Беларусь" }
+              - column: { name: num_code, value: "933" }
+              - column: { name: char_code,value: "BY" }
+        - insert:
+            tableName: countries
+            columns:
+              - column: { name: name,     value: "Болгария" }
+              - column: { name: num_code, value: "975" }
+              - column: { name: char_code,value: "BG" }
+        - insert:
+            tableName: countries
+            columns:
+              - column: { name: name,     value: "Бразилия" }
+              - column: { name: num_code, value: "986" }
+              - column: { name: char_code,value: "BR" }
+        - insert:
+            tableName: countries
+            columns:
+              - column: { name: name,     value: "Венгрия" }
+              - column: { name: num_code, value: "348" }
+              - column: { name: char_code,value: "HU" }
+        - insert:
+            tableName: countries
+            columns:
+              - column: { name: name,     value: "Вьетнам" }
+              - column: { name: num_code, value: "704" }
+              - column: { name: char_code,value: "VN" }
+        - insert:
+            tableName: countries
+            columns:
+              - column: { name: name,     value: "Гонконг (КНР)" }
+              - column: { name: num_code, value: "344" }
+              - column: { name: char_code,value: "HK" }
+        - insert:
+            tableName: countries
+            columns:
+              - column: { name: name,     value: "Грузия" }
+              - column: { name: num_code, value: "981" }
+              - column: { name: char_code,value: "GE" }
+        - insert:
+            tableName: countries
+            columns:
+              - column: { name: name,     value: "Дания" }
+              - column: { name: num_code, value: "208" }
+              - column: { name: char_code,value: "DK" }
+        - insert:
+            tableName: countries
+            columns:
+              - column: { name: name,     value: "ОАЭ" }
+              - column: { name: num_code, value: "784" }
+              - column: { name: char_code,value: "AE" }
+        - insert:
+            tableName: countries
+            columns:
+              - column: { name: name,     value: "США" }
+              - column: { name: num_code, value: "840" }
+              - column: { name: char_code,value: "US" }
+        - insert:
+            tableName: countries
+            columns:
+              - column: { name: name,     value: "Еврозона" }
+              - column: { name: num_code, value: "978" }
+              - column: { name: char_code,value: "EU" }
+        - insert:
+            tableName: countries
+            columns:
+              - column: { name: name,     value: "Египет" }
+              - column: { name: num_code, value: "818" }
+              - column: { name: char_code,value: "EG" }
+        - insert:
+            tableName: countries
+            columns:
+              - column: { name: name,     value: "Индия" }
+              - column: { name: num_code, value: "356" }
+              - column: { name: char_code,value: "IN" }
+        - insert:
+            tableName: countries
+            columns:
+              - column: { name: name,     value: "Индонезия" }
+              - column: { name: num_code, value: "360" }
+              - column: { name: char_code,value: "ID" }
+        - insert:
+            tableName: countries
+            columns:
+              - column: { name: name,     value: "Казахстан" }
+              - column: { name: num_code, value: "398" }
+              - column: { name: char_code,value: "KZ" }
+        - insert:
+            tableName: countries
+            columns:
+              - column: { name: name,     value: "Канада" }
+              - column: { name: num_code, value: "124" }
+              - column: { name: char_code,value: "CA" }
+        - insert:
+            tableName: countries
+            columns:
+              - column: { name: name,     value: "Катар" }
+              - column: { name: num_code, value: "634" }
+              - column: { name: char_code,value: "QA" }
+        - insert:
+            tableName: countries
+            columns:
+              - column: { name: name,     value: "Кыргызстан" }
+              - column: { name: num_code, value: "417" }
+              - column: { name: char_code,value: "KG" }
+        - insert:
+            tableName: countries
+            columns:
+              - column: { name: name,     value: "Китай" }
+              - column: { name: num_code, value: "156" }
+              - column: { name: char_code,value: "CN" }
+        - insert:
+            tableName: countries
+            columns:
+              - column: { name: name,     value: "Молдова" }
+              - column: { name: num_code, value: "498" }
+              - column: { name: char_code,value: "MD" }
+        - insert:
+            tableName: countries
+            columns:
+              - column: { name: name,     value: "Новая Зеландия" }
+              - column: { name: num_code, value: "554" }
+              - column: { name: char_code,value: "NZ" }
+        - insert:
+            tableName: countries
+            columns:
+              - column: { name: name,     value: "Норвегия" }
+              - column: { name: num_code, value: "578" }
+              - column: { name: char_code,value: "NO" }
+        - insert:
+            tableName: countries
+            columns:
+              - column: { name: name,     value: "Польша" }
+              - column: { name: num_code, value: "985" }
+              - column: { name: char_code,value: "PL" }
+        - insert:
+            tableName: countries
+            columns:
+              - column: { name: name,     value: "Румыния" }
+              - column: { name: num_code, value: "946" }
+              - column: { name: char_code,value: "RO" }
+        - insert:
+            tableName: countries
+            columns:
+              - column: { name: name,     value: "Международный валютный фонд" }
+              - column: { name: num_code, value: "960" }
+              - column: { name: char_code,value: "IMF" }
+        - insert:
+            tableName: countries
+            columns:
+              - column: { name: name,     value: "Сингапур" }
+              - column: { name: num_code, value: "702" }
+              - column: { name: char_code,value: "SG" }
+        - insert:
+            tableName: countries
+            columns:
+              - column: { name: name,     value: "Таджикистан" }
+              - column: { name: num_code, value: "972" }
+              - column: { name: char_code,value: "TJ" }
+        - insert:
+            tableName: countries
+            columns:
+              - column: { name: name,     value: "Таиланд" }
+              - column: { name: num_code, value: "764" }
+              - column: { name: char_code,value: "TH" }
+        - insert:
+            tableName: countries
+            columns:
+              - column: { name: name,     value: "Турция" }
+              - column: { name: num_code, value: "949" }
+              - column: { name: char_code,value: "TR" }
+        - insert:
+            tableName: countries
+            columns:
+              - column: { name: name,     value: "Туркменистан" }
+              - column: { name: num_code, value: "934" }
+              - column: { name: char_code,value: "TM" }
+        - insert:
+            tableName: countries
+            columns:
+              - column: { name: name,     value: "Узбекистан" }
+              - column: { name: num_code, value: "860" }
+              - column: { name: char_code,value: "UZ" }
+        - insert:
+            tableName: countries
+            columns:
+              - column: { name: name,     value: "Украина" }
+              - column: { name: num_code, value: "980" }
+              - column: { name: char_code,value: "UA" }
+        - insert:
+            tableName: countries
+            columns:
+              - column: { name: name,     value: "Чехия" }
+              - column: { name: num_code, value: "203" }
+              - column: { name: char_code,value: "CZ" }
+        - insert:
+            tableName: countries
+            columns:
+              - column: { name: name,     value: "Швеция" }
+              - column: { name: num_code, value: "752" }
+              - column: { name: char_code,value: "SE" }
+        - insert:
+            tableName: countries
+            columns:
+              - column: { name: name,     value: "Швейцария" }
+              - column: { name: num_code, value: "756" }
+              - column: { name: char_code,value: "CH" }
+        - insert:
+            tableName: countries
+            columns:
+              - column: { name: name,     value: "Сербия" }
+              - column: { name: num_code, value: "941" }
+              - column: { name: char_code,value: "RS" }
+        - insert:
+            tableName: countries
+            columns:
+              - column: { name: name,     value: "ЮАР" }
+              - column: { name: num_code, value: "710" }
+              - column: { name: char_code,value: "ZA" }
+        - insert:
+            tableName: countries
+            columns:
+              - column: { name: name,     value: "Южная Корея" }
+              - column: { name: num_code, value: "410" }
+              - column: { name: char_code,value: "KR" }
+        - insert:
+            tableName: countries
+            columns:
+              - column: { name: name,     value: "Япония" }
+              - column: { name: num_code, value: "392" }
+              - column: { name: char_code,value: "JP" }

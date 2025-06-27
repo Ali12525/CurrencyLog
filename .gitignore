@@ -1,0 +1,150 @@
+##############################
+## 1. Java
+##############################
+.mtj.tmp/
+*.class
+*.jar
+*.war
+*.ear
+*.nar
+hs_err_pid*
+replay_pid*
+*.log
+*.tmp
+*.swp
+*.swo
+*.lck
+
+##############################
+## 2. Maven
+##############################
+target/
+pom.xml.tag
+pom.xml.releaseBackup
+pom.xml.versionsBackup
+pom.xml.next
+pom.xml.bak
+release.properties
+dependency-reduced-pom.xml
+buildNumber.properties
+.mvn/
+.mvn/timing.properties
+.mvn/wrapper/maven-wrapper.jar
+
+##############################
+## 3. Gradle
+##############################
+.gradle/
+build/
+.gradle-task-name-cache
+.gradletasknamecache
+gradle-app.setting
+!gradle-wrapper.jar
+
+##############################
+## 4. Spring Boot / Liquibase / DB
+##############################
+*.sql
+*.dump
+*.db
+*.h2.db
+*.mv.db
+
+##############################
+## 5. IDEs
+##############################
+# IntelliJ IDEA
+.idea/
+*.iml
+*.ipr
+*.iws
+.idea_modules/
+out/
+
+# Исключаем пользовательские/чувствительные файлы из .idea:
+.idea/**/workspace.xml
+.idea/**/tasks.xml
+.idea/**/usage.statistics.xml
+.idea/**/shelf/
+.idea/**/dictionaries/
+.idea/**/aws.xml
+.idea/**/contentModel.xml
+.idea/**/dataSources/
+.idea/**/dataSources.ids
+.idea/**/dataSources.local.xml
+.idea/**/sqlDataSources.xml
+.idea/**/dynamic.xml
+.idea/**/uiDesigner.xml
+.idea/**/dbnavigator.xml
+.idea/**/mongoSettings.xml
+.idea/**/httpRequests/
+.idea/**/caches/build_file_checksums.ser
+
+# В проектах на Maven/Gradle с автоимпортом эти файлы могут генерироваться — можно раскомментировать те, которые хочешь игнорировать:
+# .idea/artifacts/
+# .idea/compiler.xml
+# .idea/jarRepositories.xml
+# .idea/modules.xml
+# .idea/*.iml
+# .idea/modules/
+
+# Eclipse
+.settings/
+bin/
+tmp/
+.metadata/
+.classpath
+.project
+*.tmp
+*.bak
+*.swp
+*~.nib
+local.properties
+.loadpath
+.factorypath
+
+# NetBeans
+nbproject/private/
+nbbuild/
+dist/
+nbactions.xml
+nb-configuration.xml
+
+# VS Code
+.vscode/
+.code-workspace
+
+##############################
+## 6. OS‑specific
+##############################
+.DS_Store
+Thumbs.db
+Icon?
+
+##############################
+## 7. Test artifacts
+##############################
+surefire-reports/
+failsafe-reports/
+test-output/
+allure-results/
+allure-report/
+jacoco.exec
+*.ec
+
+##############################
+## 8. WebDriverManager
+##############################
+.wdm/
+
+##############################
+## 9. Environment / secrets
+##############################
+.env
+*.env
+
+##############################
+## 10. Generated code
+##############################
+delombok/
+javadoc/
