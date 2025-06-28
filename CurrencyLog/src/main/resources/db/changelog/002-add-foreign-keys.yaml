@@ -1,0 +1,21 @@
+databaseChangeLog:
+  - changeSet:
+      id: 4
+      author: Ali
+      changes:
+        - addForeignKeyConstraint:
+            baseTableName: rates
+            baseColumnNames: country_id
+            referencedTableName: countries
+            referencedColumnNames: id
+            constraintName: fk_rates_country
+  - changeSet:
+      id: 5
+      author: Ali
+      changes:
+        - addForeignKeyConstraint:
+            baseTableName: rates
+            baseColumnNames: rate_dict_id
+            referencedTableName: rate_dict
+            referencedColumnNames: id
+            constraintName: fk_rates_rate_dict
