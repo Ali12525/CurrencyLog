@@ -20,7 +20,7 @@ public class CurrencyController {
     @Operation(summary = "Принудительно синхронизировать курсы сейчас")
     @PostMapping("/sync")
     public ResponseEntity<Void> syncNow() {
-        syncService.syncHourly();
+        syncService.syncCurrency();
         return ResponseEntity.accepted().build();
     }
 }

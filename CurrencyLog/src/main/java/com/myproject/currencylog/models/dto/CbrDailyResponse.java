@@ -15,7 +15,7 @@ public class CbrDailyResponse {
 
     @JacksonXmlElementWrapper(useWrapping = false)
     @JacksonXmlProperty(localName = "Valute")
-    private List<Valute> valute;
+    private List<CurrencyRate> currencyRate;
 
     public String getDate() {
         return date;
@@ -25,11 +25,11 @@ public class CbrDailyResponse {
         this.date = date;
     }
 
-    public List<Valute> getValute() {
-        return valute;
+    public List<CurrencyRate> getCurrencyRate() {
+        return currencyRate;
     }
 
-    public void setValute(List<Valute> valute) {
-        this.valute = valute;
+    public void setCurrencyRate(List<CurrencyRate> currencyRate) {
+        this.currencyRate = currencyRate;
     }
 }

@@ -2,7 +2,7 @@ package com.myproject.currencylog.models.dto;
 
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 
-public class Valute {
+public class CurrencyRate {
     @JacksonXmlProperty(isAttribute = true, localName = "ID")
     private String id;
 
@@ -72,11 +72,11 @@ public class Valute {
         this.value = value;
     }
 
-    public String getVunitRate() {
+    public String getVUnitRate() {
         return vunitRate;
     }
 
-    public void setVunitRate(String vunitRate) {
-        this.vunitRate = vunitRate;
+    public void setVUnitRate(String vUnitRate) {
+        this.vunitRate = vUnitRate;
     }
 }
