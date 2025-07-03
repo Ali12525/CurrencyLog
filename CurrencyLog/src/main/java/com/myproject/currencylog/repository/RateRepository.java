@@ -11,6 +11,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 public interface RateRepository extends JpaRepository<RateEntity, Long>, JpaSpecificationExecutor<RateEntity> {
     @Query("SELECT r FROM RateEntity r JOIN FETCH r.rateDict WHERE r.rateDate = :rateDate")
@@ -18,4 +19,10 @@ public interface RateRepository extends JpaRepository<RateEntity, Long>, JpaSpec
 
     @EntityGraph(attributePaths = {"rateDict", "country"})
     Page<RateEntity> findAll(Specification<RateEntity> spec, Pageable pageable);
+
+    @Query("SELECT r FROM RateEntity r WHERE r.rateDictId = :rateDictId AND r.rateDate = :rateDate")
+    Optional<RateEntity> findByRateDictIdAndRateDate(
+            @Param("rateDictId") Long rateDictId,
+            @Param("rateDate") LocalDateTime rateDate
+    );
 }

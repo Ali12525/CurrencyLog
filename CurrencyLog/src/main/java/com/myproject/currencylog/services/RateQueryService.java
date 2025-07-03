@@ -1,9 +1,11 @@
 package com.myproject.currencylog.services;
 
+import com.myproject.currencylog.mapper.RateMapper;
 import com.myproject.currencylog.models.dto.RateResponse;
 import com.myproject.currencylog.models.jpa.RateEntity;
 import com.myproject.currencylog.repository.RateRepository;
 import com.myproject.currencylog.spec.RateSpecifications;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
@@ -15,13 +17,11 @@ import java.time.LocalTime;
 import java.util.Optional;
 
 @Service
+@RequiredArgsConstructor
 public class RateQueryService {
 
     private final RateRepository rateRepository;
-
-    public RateQueryService(RateRepository rateRepository) {
-        this.rateRepository = rateRepository;
-    }
+    private final RateMapper rateMapper;
 
     public Page<RateResponse> findRates(
             Optional<String> countryCode,
@@ -48,18 +48,6 @@ public class RateQueryService {
             spec = spec.and(RateSpecifications.hasRateDateBetween(from, to));
         }
 
-        return rateRepository.findAll(spec, pageable).map(this::convertToDto);
-    }
-
-    private RateResponse convertToDto(RateEntity entity) {
-        return new RateResponse(
-                entity.getCountry().getCharCode(),
-                entity.getRateDict().getCharCode(),
-                entity.getRateDict().getNumCode(),
-                entity.getRateDate().toLocalDate(),
-                entity.getValue(),
-                entity.getNominal(),
-                entity.getRateDict().getName()
-        );
+        return rateRepository.findAll(spec, pageable).map(rateMapper::toDto);
     }
 }

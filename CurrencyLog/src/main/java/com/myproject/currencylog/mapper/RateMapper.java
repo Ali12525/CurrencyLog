@@ -1,6 +1,7 @@
 package com.myproject.currencylog.mapper;
 
 import com.myproject.currencylog.models.dto.CurrencyRate;
+import com.myproject.currencylog.models.dto.RateResponse;
 import com.myproject.currencylog.models.jpa.CountryEntity;
 import com.myproject.currencylog.models.jpa.RateDictEntity;
 import com.myproject.currencylog.models.jpa.RateEntity;
@@ -26,5 +27,17 @@ public class RateMapper {
         rate.setCreated(now);
         rate.setUpdated(now);
         return rate;
+    }
+
+    public RateResponse toDto(RateEntity entity) {
+        return new RateResponse(
+                entity.getCountry().getCharCode(),
+                entity.getRateDict().getCharCode(),
+                entity.getRateDict().getNumCode(),
+                entity.getRateDate().toLocalDate(),
+                entity.getValue(),
+                entity.getNominal(),
+                entity.getRateDict().getName()
+        );
     }
 }

@@ -1,28 +1,36 @@
 package com.myproject.currencylog.controller;
 
 import com.myproject.currencylog.models.dto.RateResponse;
+import com.myproject.currencylog.models.dto.RateUpdateRequest;
+import com.myproject.currencylog.services.RateCommandService;
 import com.myproject.currencylog.services.RateQueryService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.Pattern;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
 import java.util.Optional;
 
+@Validated
 @RestController
 @RequestMapping("/api/rates")
 public class RateController {
 
     private final RateQueryService queryService;
+    private final RateCommandService commandService;
 
-    public RateController(RateQueryService queryService) {
+    public RateController(RateQueryService queryService, RateCommandService commandService) {
         this.queryService = queryService;
+        this.commandService = commandService;
     }
 
     @Operation(summary = "Получить курсы с фильтрацией, пагинацией и сортировкой")
@@ -62,4 +70,12 @@ public class RateController {
         );
     }
 
+    @Operation(summary = "Обновить курс валюты по дате и коду")
+    @PutMapping
+    public ResponseEntity<RateResponse> updateRate(
+            @Valid @RequestBody RateUpdateRequest updateRequest
+    ) {
+        RateResponse updatedRate = commandService.updateRate(updateRequest);
+        return ResponseEntity.ok(updatedRate);
+    }
 }
