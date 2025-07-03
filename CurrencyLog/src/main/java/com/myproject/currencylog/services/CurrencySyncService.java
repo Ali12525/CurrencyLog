@@ -48,55 +48,50 @@ public class CurrencySyncService {
         this.countryRepository = countryRepository;
     }
 
-    @Scheduled(fixedRateString = "${currency.sync.rate:3600000}")
     @Transactional
     public void syncCurrency() {
-        try {
-            CbrDailyResponse resp = cbrClient.fetchDaily();
-            LocalDateTime rateDate = parseDate(resp.getDate());
-            LocalDateTime now = LocalDateTime.now();
+        CbrDailyResponse resp = cbrClient.fetchDaily();
+        LocalDateTime rateDate = parseDate(resp.getDate());
+        LocalDateTime now = LocalDateTime.now();
 
-            List<String> numCodes = resp.getCurrencyRate().stream().map(CurrencyRate::getNumCode).distinct().toList();
+        List<String> numCodes = resp.getCurrencyRate().stream().map(CurrencyRate::getNumCode).distinct().toList();
 
-            Map<String, RateDictEntity> dictByNum = rateDictRepository.findByNumCodeIn(numCodes).stream()
-                    .collect(Collectors.toMap(RateDictEntity::getNumCode, Function.identity()));
+        Map<String, RateDictEntity> dictByNum = rateDictRepository.findByNumCodeIn(numCodes).stream()
+                .collect(Collectors.toMap(RateDictEntity::getNumCode, Function.identity()));
 
-            Map<String, CountryEntity> countryByNum = countryRepository.findByNumCodeIn(numCodes).stream()
-                    .collect(Collectors.toMap(CountryEntity::getNumCode, Function.identity()));
+        Map<String, CountryEntity> countryByNum = countryRepository.findByNumCodeIn(numCodes).stream()
+                .collect(Collectors.toMap(CountryEntity::getNumCode, Function.identity()));
 
-            Map<String, RateEntity> existingRates = rateRepository.findByRateDateWithDict(rateDate).stream()
-                    .collect(Collectors.toMap(
-                            rate -> rate.getRateDict().getNumCode(),
-                            Function.identity()
-                    ));
+        Map<String, RateEntity> existingRates = rateRepository.findByRateDateWithDict(rateDate).stream()
+                .collect(Collectors.toMap(
+                        rate -> rate.getRateDict().getNumCode(),
+                        Function.identity()
+                ));
 
-            List<RateEntity> ratesToSave = new ArrayList<>();
+        List<RateEntity> ratesToSave = new ArrayList<>();
 
-            for (CurrencyRate currencyRate : resp.getCurrencyRate()) {
-                String numCode = currencyRate.getNumCode();
+        for (CurrencyRate currencyRate : resp.getCurrencyRate()) {
+            String numCode = currencyRate.getNumCode();
 
-                RateDictEntity dict = dictByNum.get(numCode);
-                CountryEntity country = countryByNum.get(numCode);
+            RateDictEntity dict = dictByNum.get(numCode);
+            CountryEntity country = countryByNum.get(numCode);
 
-                if (dict == null || country == null) {
-                    log.warn("Не найден справочник или страна для кода: {}", numCode);
-                    continue;
-                }
-
-                if (existingRates.containsKey(numCode)) {
-                    RateEntity existing = existingRates.get(numCode);
-                    updateExistingRate(existing, currencyRate, now);
-                    ratesToSave.add(existing);
-                } else {
-                    ratesToSave.add(createNewRate(currencyRate, dict, country, rateDate, now));
-                }
+            if (dict == null || country == null) {
+                log.warn("Не найден справочник или страна для кода: {}", numCode);
+                continue;
             }
 
-            if (!ratesToSave.isEmpty()) {
-                rateRepository.saveAll(ratesToSave);
+            if (existingRates.containsKey(numCode)) {
+                RateEntity existing = existingRates.get(numCode);
+                updateExistingRate(existing, currencyRate, now);
+                ratesToSave.add(existing);
+            } else {
+                ratesToSave.add(createNewRate(currencyRate, dict, country, rateDate, now));
             }
-        } catch (Exception e) {
-            log.error("Ошибка синхронизации курсов валют", e);
+        }
+
+        if (!ratesToSave.isEmpty()) {
+            rateRepository.saveAll(ratesToSave);
         }
     }
 

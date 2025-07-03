@@ -1,5 +1,6 @@
 package com.myproject.currencylog.services;
 
+import com.myproject.currencylog.models.dto.RateResponse;
 import com.myproject.currencylog.models.jpa.RateEntity;
 import com.myproject.currencylog.repository.RateRepository;
 import com.myproject.currencylog.spec.RateSpecifications;
@@ -22,7 +23,7 @@ public class RateQueryService {
         this.rateRepository = rateRepository;
     }
 
-    public Page<RateEntity> findRates(
+    public Page<RateResponse> findRates(
             Optional<String> countryCode,
             Optional<String> currencyCode,
             Optional<String> numCode,
@@ -42,11 +43,23 @@ public class RateQueryService {
             spec = spec.and(RateSpecifications.hasRateDictNumCode(numCode.get()));
         }
         if (dateFrom.isPresent() && dateTo.isPresent()) {
-            LocalDateTime from = dateFrom.get().atStartOfDay();
-            LocalDateTime to   = dateTo.get().atTime(LocalTime.MAX);
+            LocalDateTime from = dateFrom.orElse(LocalDate.MIN).atStartOfDay();
+            LocalDateTime to = dateTo.orElse(LocalDate.MAX).atTime(LocalTime.MAX);
             spec = spec.and(RateSpecifications.hasRateDateBetween(from, to));
         }
 
-        return rateRepository.findAll(spec, pageable);
+        return rateRepository.findAll(spec, pageable).map(this::convertToDto);
+    }
+
+    private RateResponse convertToDto(RateEntity entity) {
+        return new RateResponse(
+                entity.getCountry().getCharCode(),
+                entity.getRateDict().getCharCode(),
+                entity.getRateDict().getNumCode(),
+                entity.getRateDate().toLocalDate(),
+                entity.getValue(),
+                entity.getNominal(),
+                entity.getRateDict().getName()
+        );
     }
 }

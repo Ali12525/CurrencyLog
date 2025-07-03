@@ -1,8 +1,10 @@
 package com.myproject.currencylog.controller;
 
-import com.myproject.currencylog.models.jpa.RateEntity;
+import com.myproject.currencylog.models.dto.RateResponse;
 import com.myproject.currencylog.services.RateQueryService;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import jakarta.validation.constraints.Pattern;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -25,15 +27,39 @@ public class RateController {
 
     @Operation(summary = "Получить курсы с фильтрацией, пагинацией и сортировкой")
     @GetMapping
-    public Page<RateEntity> getRates(
-            @RequestParam Optional<String> countryCode,
-            @RequestParam Optional<String> currencyCode,
-            @RequestParam Optional<String> numCode,
-            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Optional<LocalDate> dateFrom,
-            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) Optional<LocalDate> dateTo,
-            Pageable pageable
+    public Page<RateResponse> getRates(
+            @RequestParam(required = false)
+            @Pattern(regexp = "[A-Z]{2}", message = "Код страны должен состоять из 2 заглавных букв")
+            String countryCode,
+
+            @RequestParam(required = false)
+            @Pattern(regexp = "[A-Z]{3}", message = "Код валюты должен состоять из 3 заглавных букв")
+            String currencyCode,
+
+            @RequestParam(required = false)
+            @Pattern(regexp = "\\d{3}", message = "Цифровой код должен состоять из 3 цифр")
+            String numCode,
+
+            @RequestParam(required = false)
+            @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
+            @Parameter(description = "Дата в формате YYYY-MM-DD", example = "2025-01-01")
+            LocalDate dateFrom,
+
+            @RequestParam(required = false)
+            @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
+            @Parameter(description = "Дата в формате YYYY-MM-DD", example = "2025-08-01")
+            LocalDate dateTo,
+
+            @PageableDefault(sort = "rateDate", direction = Sort.Direction.DESC) Pageable pageable
     ) {
-        return queryService.findRates(countryCode, currencyCode, numCode, dateFrom, dateTo, pageable);
+        return queryService.findRates(
+                Optional.ofNullable(countryCode),
+                Optional.ofNullable(currencyCode),
+                Optional.ofNullable(numCode),
+                Optional.ofNullable(dateFrom),
+                Optional.ofNullable(dateTo),
+                pageable
+        );
     }
 
 }

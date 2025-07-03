@@ -1,12 +1,11 @@
 package com.myproject.currencylog.controller;
 
-import com.myproject.currencylog.models.jpa.RateDictEntity;
-import com.myproject.currencylog.repository.RateDictRepository;
+import com.myproject.currencylog.models.dto.CurrencyDictResponse;
+import com.myproject.currencylog.services.RateDictService;
 import io.swagger.v3.oas.annotations.Operation;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-
-import jakarta.persistence.EntityNotFoundException;
+import io.swagger.v3.oas.annotations.Parameter;
+import jakarta.validation.constraints.Pattern;
+import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -16,31 +15,27 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/currencies/dict")
+@RequiredArgsConstructor
 public class RateDictController {
-
-    private final RateDictRepository rateDictRepository;
-
-    public RateDictController(RateDictRepository rateDictRepository) {
-        this.rateDictRepository = rateDictRepository;
-    }
+    private final RateDictService rateDictService;
 
     @Operation(summary = "Получить справочник валюты")
     @GetMapping
-    public List<RateDictEntity> getAllCurrencyDict() {
-        return rateDictRepository.findAll();
+    public List<CurrencyDictResponse> getAllCurrencyDict() {
+        return rateDictService.getAll();
     }
 
-    @Operation(summary = "Получить одну валюту по трёхбуквенному коду")
-    @GetMapping("/{charCode}")
-    public RateDictEntity getByCharCode(@PathVariable String charCode) {
-        return rateDictRepository.findByCharCode(charCode)
-                .orElseThrow(() -> new EntityNotFoundException("Валюта с кодом " + charCode + " не найдена"));
+    @Operation(summary = "Получить одну валюту по трёхбуквенному коду", parameters = {
+            @Parameter(name = "charCode", example = "AUD")})
+    @GetMapping("/char-code/{charCode}")
+    public CurrencyDictResponse getByCharCode(@PathVariable @Pattern(regexp = "[A-Z]{3}", message = "Код должен состоять из 3 заглавных букв") String charCode) {
+        return rateDictService.getByCharCode(charCode);
     }
 
-    @Operation(summary = "Получить одну валюту по цифровому коду")
-    @GetMapping("/num/{numCode}")
-    public RateDictEntity getByNumCode(@PathVariable String numCode) {
-        return rateDictRepository.findByNumCode(numCode)
-                .orElseThrow(() -> new EntityNotFoundException("Валюта с numCode=" + numCode + " не найдена"));
+    @Operation(summary = "Получить одну валюту по цифровому коду", parameters = {
+            @Parameter(name = "numCode", example = "036")})
+    @GetMapping("/num-code/{numCode}")
+    public CurrencyDictResponse getByNumCode(@PathVariable @Pattern(regexp = "\\d{3}", message = "Код должен состоять из 3 цифр") String numCode) {
+        return rateDictService.getByNumCode(numCode);
     }
 }

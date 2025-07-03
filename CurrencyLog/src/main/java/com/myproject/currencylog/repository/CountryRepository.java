@@ -14,4 +14,7 @@ public interface CountryRepository extends JpaRepository<CountryEntity, Long> {
 
     @Query("SELECT c FROM CountryEntity c WHERE c.numCode IN :codes")
     List<CountryEntity> findByNumCodeIn(@Param("codes") List<String> codes);
+
+    @Query("SELECT c FROM CountryEntity c ORDER BY c.name ASC")
+    List<CountryEntity> findAllByOrderByNameAsc();
 }
