@@ -1,9 +1,9 @@
-package com.myproject.currencylog;
+package com.myproject.currencylog.service;
+
 
 import com.myproject.currencylog.integration.CbrClient;
 import com.myproject.currencylog.mapper.RateMapper;
 import com.myproject.currencylog.models.dto.CbrDailyResponse;
-import com.myproject.currencylog.models.dto.CurrencyRate;
 import com.myproject.currencylog.models.jpa.CountryEntity;
 import com.myproject.currencylog.models.jpa.RateDictEntity;
 import com.myproject.currencylog.models.jpa.RateEntity;
@@ -11,6 +11,7 @@ import com.myproject.currencylog.repository.CountryRepository;
 import com.myproject.currencylog.repository.RateDictRepository;
 import com.myproject.currencylog.repository.RateRepository;
 import com.myproject.currencylog.services.CurrencySyncService;
+import com.myproject.currencylog.util.EntityFactory;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
@@ -21,6 +22,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.math.BigDecimal;
 import java.util.List;
 
+import static com.myproject.currencylog.util.TestConstants.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
@@ -29,7 +31,6 @@ import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class CurrencySyncServiceTest {
-
     @Mock
     private CbrClient cbrClient;
 
@@ -48,33 +49,21 @@ class CurrencySyncServiceTest {
     @InjectMocks
     private CurrencySyncService syncService;
 
+    private final RateDictEntity AUD_DICT = EntityFactory.createRateDict(1L, AUD_CURRENCY_CODE, AUD_NUM_CODE, AUD_NAME);
+    private final CountryEntity AU_COUNTRY = EntityFactory.createCountry(1L, AU_COUNTRY_CODE, AUD_NUM_CODE, "Австралия");
+
     @Test
     void syncCurrency_NewRate() {
-        CbrDailyResponse response = new CbrDailyResponse();
-        response.setDate("05.07.2025");
-        response.setCurrencyRate(List.of(
-                new CurrencyRate("1", "036", "AUD", 1l, "Австралийский доллар", "51.2345")
-        ));
-
-        RateDictEntity rateDict = new RateDictEntity();
-        rateDict.setId(1L);
-        rateDict.setCharCode("AUD");
-        rateDict.setNumCode("036");
-        rateDict.setName("Австралийский доллар");
-
-        CountryEntity country = new CountryEntity();
-        country.setId(1L);
-        country.setCharCode("AU");
-        country.setNumCode("036");
-        country.setName("Австралия");
-
-        RateEntity newRate = new RateEntity();
+        CbrDailyResponse response = EntityFactory.createCbrResponse(
+                "05.07.2025",
+                EntityFactory.createCurrencyRate("1", AUD_NUM_CODE, AUD_CURRENCY_CODE, 1, AUD_NAME, "51.2345")
+        );
 
         when(cbrClient.fetchDaily()).thenReturn(response);
-        when(rateDictRepository.findByNumCodeIn(any())).thenReturn(List.of(rateDict));
-        when(countryRepository.findByNumCodeIn(any())).thenReturn(List.of(country));
+        when(rateDictRepository.findByNumCodeIn(any())).thenReturn(List.of(AUD_DICT));
+        when(countryRepository.findByNumCodeIn(any())).thenReturn(List.of(AU_COUNTRY));
         when(rateRepository.findByRateDateWithDict(any())).thenReturn(List.of());
-        when(rateMapper.toEntity(any(), any(), any(), any(), any(), any())).thenReturn(newRate);
+        when(rateMapper.toEntity(any(), any(), any(), any(), any(), any())).thenReturn(EntityFactory.createRate(AUD_DICT, AU_COUNTRY, null));
 
         syncService.syncCurrency();
 
@@ -85,37 +74,20 @@ class CurrencySyncServiceTest {
 
     @Test
     void syncCurrency_UpdateExistingRate() {
-        CbrDailyResponse response = new CbrDailyResponse();
-        response.setDate("05.07.2025");
-        response.setCurrencyRate(List.of(
-                new CurrencyRate("R01010", "036", "AUD", 1l, "Австралийский доллар", "52.1234")
-        ));
+        CbrDailyResponse response = EntityFactory.createCbrResponse(
+                "05.07.2025", EntityFactory.createCurrencyRate("R01010", AUD_NUM_CODE, AUD_CURRENCY_CODE, 1, AUD_NAME, "52.1234")
+        );
 
-        RateDictEntity rateDict = new RateDictEntity();
-        rateDict.setId(1L);
-        rateDict.setCharCode("AUD");
-        rateDict.setNumCode("036");
-        rateDict.setName("Австралийский доллар");
-
-        CountryEntity country = new CountryEntity();
-        country.setId(1L);
-        country.setCharCode("AU");
-        country.setNumCode("036");
-        country.setName("Австралия");
-
-        RateEntity existingRate = new RateEntity();
-        existingRate.setValue(BigDecimal.valueOf(50.0));
-        existingRate.setRateDict(rateDict);
-        existingRate.setCountry(country);
+        RateEntity existingRate = EntityFactory.createRate(AUD_DICT, AU_COUNTRY, BigDecimal.valueOf(50.0));
 
         when(cbrClient.fetchDaily()).thenReturn(response);
-        when(rateDictRepository.findByNumCodeIn(any())).thenReturn(List.of(rateDict));
-        when(countryRepository.findByNumCodeIn(any())).thenReturn(List.of(country));
+        when(rateDictRepository.findByNumCodeIn(any())).thenReturn(List.of(AUD_DICT));
+        when(countryRepository.findByNumCodeIn(any())).thenReturn(List.of(AU_COUNTRY));
         when(rateRepository.findByRateDateWithDict(any())).thenReturn(List.of(existingRate));
 
         syncService.syncCurrency();
 
-        assertEquals(BigDecimal.valueOf(52.1234), existingRate.getValue());
+        assertEquals(TEST_VALUE_2, existingRate.getValue());
         assertEquals(1, existingRate.getNominal());
         assertNotNull(existingRate.getUpdated());
         verify(rateRepository).saveAll(any());
