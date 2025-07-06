@@ -3,6 +3,24 @@ package com.myproject.currencylog.models.dto;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 
 public class CurrencyRate {
+    public CurrencyRate(
+            String id,
+            String numCode,
+            String charCode,
+            Long nominal,
+            String name,
+            String value
+    ) {
+        this.id = id;
+        this.numCode = numCode;
+        this.charCode = charCode;
+        this.nominal = nominal;
+        this.name = name;
+        this.value = value;
+    }
+
+    public CurrencyRate() {}
+
     @JacksonXmlProperty(isAttribute = true, localName = "ID")
     private String id;
 
